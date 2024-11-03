@@ -5,8 +5,8 @@ const app = express();
 const port = 3000;
 
 // 在全局作用域中加载字体
-PImage.registerFont('./font/simhei.ttf', 'SimHei');
-const font = PImage.registerFont('./font/simhei.ttf', 'SimHei');
+PImage.registerFont('./simhei.ttf', 'SimHei');
+const font = PImage.registerFont('./simhei.ttf', 'SimHei');
 font.loadSync(); // 同步加载字体
 
 app.get('/getlunarimg', (req, res) => {
