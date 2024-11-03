@@ -1,7 +1,17 @@
 {
+  "name": "lunar-calendar-app",
+  "version": "1.0.0",
+  "description": "An app that generates a lunar calendar image.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "express": "^4.21.1",
-    "lunar-javascript": "^1.6.12",
-    "pureimage": "^0.4.18"
+    "express": "^4.17.1",
+    "lunar-javascript": "^0.6.3",
+    "pureimage": "^0.2.6"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
