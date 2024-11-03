@@ -17,48 +17,51 @@ app.get('/getlunarimg', (req, res) => {
   const canvas = PImage.make(width, height);
   const ctx = canvas.getContext('2d');
 
-  // 设置背景颜色
-  ctx.fillStyle = '#FFFFFF'; // 白色背景
+  // Set background color
+  ctx.fillStyle = '#FFFFFF'; // White background
   ctx.fillRect(0, 0, width, height);
 
-  // 获取公历和农历日期
+  // Draw header
+  ctx.fillStyle = '#0000FF'; // Blue header
+  ctx.fillRect(0, 0, width, 40);
+  ctx.fillStyle = '#FFFFFF'; // White text
+  ctx.font = '24px SimHei';
+  ctx.fillText(`${solar.getYear()}年 ${solar.getMonth()}月`, 10, 30);
+
+  // Draw borders
+  ctx.strokeStyle = '#000000'; // Black border
+  ctx.lineWidth = 2;
+  ctx.strokeRect(5, 45, width - 10, height - 50);
+
+  // Get solar and lunar dates
   const solar = Solar.fromDate(new Date());
   const lunar = Lunar.fromDate(new Date());
-  
-  // 获取特殊日子和福
+
+  // Get special days and Fu
   const shuJiu = lunar.getShuJiu();
   const shuJiuString = shuJiu ? shuJiu.toFullString() : 'N/A';
   const Fu = lunar.getFu();
   const FuString = Fu ? Fu.toFullString() : 'N/A';
 
-  // 设置文本样式
-  ctx.font = '20px SimHei';
-  ctx.fillStyle = '#000000'; // 黑色文本
+  // Set text style
+  ctx.font = '18px SimHei';
+  ctx.fillStyle = '#000000'; // Black text
 
-  // 绘制文本
+  // Draw text with improved alignment
   const drawText = (text, x, y) => {
     ctx.fillText(text, x, y);
-    ctx.strokeText(text, x, y); // 为了更清晰，绘制文本的轮廓
   };
 
-  drawText(`${solar.getYear()}年`, 10, 30);
-  drawText(`${solar.getMonth()}月`, 10, 60);
-  drawText(`${solar.getDay()}日`, 10, 90);
-  drawText(`星期${solar.getWeekInChinese()}`, 10, 120);
+  drawText(`公历: ${solar.getYear()}年${solar.getMonth()}月${solar.getDay()}日 星期${solar.getWeekInChinese()}`, 10, 70);
+  drawText(`农历: ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}日`, 10, 100);
+  drawText(`干支: ${lunar.getYearInGanZhiByLiChun()}年 ${lunar.getMonthInGanZhiExact()}月 ${lunar.getDayInGanZhiExact()}日`, 10, 130);
+  drawText(`月相: ${lunar.getYueXiang()}`, 10, 160);
+  drawText(`物候: ${lunar.getWuHou()}`, 10, 190);
+  drawText(`候: ${lunar.getHou()}`, 10, 220);
+  drawText(`数九: ${shuJiuString}`, 10, 250);
+  drawText(`伏: ${FuString}`, 10, 280);
 
-  drawText(`${lunar.getMonthInChinese()}月`, 200, 30);
-  drawText(`${lunar.getDayInChinese()}日`, 200, 60);
-  drawText(`${lunar.getYearInGanZhiByLiChun()}年`, 200, 90);
-  drawText(`${lunar.getMonthInGanZhiExact()}月`, 200, 120);
-
-  drawText(`${lunar.getDayInGanZhiExact()}日`, 320, 30);
-  drawText(`${lunar.getYueXiang()}月`, 320, 60);
-  drawText(`${lunar.getWuHou()}`, 320, 90);
-  drawText(`${lunar.getHou()}`, 320, 120);
-  drawText(shuJiuString, 320, 150);
-  drawText(FuString, 320, 180);
-
-  // 将图片转换为PNG格式并返回
+  // Convert image to PNG format and return
   PImage.encodePNGToStream(canvas, res)
     .then(() => {
       console.log("Image sent to client");
