@@ -1,7 +1,6 @@
 const express = require('express');
 const PImage = require('pureimage');
 const { Solar, Lunar } = require('lunar-javascript');
-
 const app = express();
 const port = 3000;
 
@@ -40,7 +39,7 @@ app.get('/getlunarimg', (req, res) => {
   };
 
   drawText(`${solar.getYear()}年`, 10, 30);
-  drawText(`${solar.getMonth() + 1}月`, 10, 60);
+  drawText(`${solar.getMonth()}月`, 10, 60);
   drawText(`${solar.getDay()}日`, 10, 90);
   drawText(`星期${solar.getWeekInChinese()}`, 10, 120);
 
@@ -67,4 +66,6 @@ app.get('/getlunarimg', (req, res) => {
     });
 });
 
-module.exports = app;
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
