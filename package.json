@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "express": "^4.21.1",
+    "lunar-javascript": "^1.6.12",
+    "pureimage": "^0.4.18"
+  }
+}
