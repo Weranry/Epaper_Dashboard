@@ -1,17 +1,15 @@
 const express = require('express');
 const PImage = require('pureimage');
 const { Solar, Lunar } = require('lunar-javascript');
+const path = require('path'); // Import the path module
 const app = express();
 const port = 3000;
 
+// Use absolute path for the font
 const fontPath = path.join(__dirname, 'public', 'simhei.ttf');
 PImage.registerFont(fontPath, 'SimHei');
 const font = PImage.registerFont(fontPath, 'SimHei');
-font.loadSync();
-// 在全局作用域中加载字体
-/*PImage.registerFont('./public/simhei.ttf', 'SimHei');
-const font = PImage.registerFont('./public/simhei.ttf', 'SimHei');
-font.loadSync(); // 同步加载字体*/
+font.loadSync(); // Synchronously load the font
 
 app.get('/getlunarimg', (req, res) => {
   const width = 400;
