@@ -11,13 +11,12 @@ app.get('/getlunarimg', (req, res) => {
   const height = 300;
   const canvas = PImage.make(width, height);
   const ctx = canvas.getContext('2d');
-
+  font.loadSync(); // 同步加载字体
   // 设置背景颜色
   ctx.fillStyle = '#FFFFFF'; // 白色背景
   ctx.fillRect(0, 0, width, height);
 
-  // 注册字体
-
+  
 
   // 获取公历和农历日期
   const solar = Solar.fromDate(new Date());
