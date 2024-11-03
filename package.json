@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "lunar-javascript": "^0.6.3",
+    "lunar-javascript": "^1.6.12",
     "pureimage": "^0.2.6"
   },
   "engines": {
