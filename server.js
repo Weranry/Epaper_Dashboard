@@ -3,6 +3,8 @@ const PImage = require('pureimage');
 const { Solar, Lunar } = require('lunar-javascript');
 const app = express();
 const port = 3000;
+const font = PImage.registerFont('./font/simhei.ttf', 'SimHei');
+font.loadSync(); // 同步加载字体
 
 app.get('/getlunarimg', (req, res) => {
   const width = 400;
@@ -15,8 +17,7 @@ app.get('/getlunarimg', (req, res) => {
   ctx.fillRect(0, 0, width, height);
 
   // 注册字体
-  const font = PImage.registerFont('./simhei.ttf', 'SimHei');
-  font.loadSync(); // 同步加载字体
+
 
   // 获取公历和农历日期
   const solar = Solar.fromDate(new Date());
