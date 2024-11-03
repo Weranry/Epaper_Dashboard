@@ -21,6 +21,10 @@ app.get('/getlunarimg', (req, res) => {
   ctx.fillStyle = '#FFFFFF'; // White background
   ctx.fillRect(0, 0, width, height);
 
+  // Get solar and lunar dates
+  const solar = Solar.fromDate(new Date());
+  const lunar = Lunar.fromDate(new Date());
+
   // Draw header
   ctx.fillStyle = '#0000FF'; // Blue header
   ctx.fillRect(0, 0, width, 40);
@@ -32,10 +36,6 @@ app.get('/getlunarimg', (req, res) => {
   ctx.strokeStyle = '#000000'; // Black border
   ctx.lineWidth = 2;
   ctx.strokeRect(5, 45, width - 10, height - 50);
-
-  // Get solar and lunar dates
-  const solar = Solar.fromDate(new Date());
-  const lunar = Lunar.fromDate(new Date());
 
   // Get special days and Fu
   const shuJiu = lunar.getShuJiu();
@@ -67,7 +67,7 @@ app.get('/getlunarimg', (req, res) => {
       console.log("Image sent to client");
     })
     .catch((e) => {
-      console.log("Error sending image: ", e);
+      console.error("Error sending image: ", e.stack);
       res.status(500).send('Error generating image');
     });
 });
