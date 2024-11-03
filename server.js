@@ -3,15 +3,18 @@ const PImage = require('pureimage');
 const { Solar, Lunar } = require('lunar-javascript');
 const app = express();
 const port = 3000;
-const font = PImage.registerFont('./font/simhei.ttf', 'SimHei');
+
 font.loadSync(); // 同步加载字体
 
 app.get('/getlunarimg', (req, res) => {
+  const font = PImage.registerFont('./font/simhei.ttf', 'SimHei');
+  font.loadSync(); // 同步加载字体
+ 
   const width = 400;
   const height = 300;
   const canvas = PImage.make(width, height);
   const ctx = canvas.getContext('2d');
-  font.loadSync(); // 同步加载字体
+
   // 设置背景颜色
   ctx.fillStyle = '#FFFFFF'; // 白色背景
   ctx.fillRect(0, 0, width, height);
