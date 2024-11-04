@@ -13,70 +13,56 @@ font.loadSync(); // Synchronously load the font
 
 app.get('/getlunarimg', (req, res) => {
   const width = 400;
-const height = 500;
-const canvas = PImage.make(width, height);
-const ctx = canvas.getContext('2d');
+  const height = 300;
+  const img = PImage.make(width, height);
+  const ctx = img.getContext('2d');
 
-// 设置背景色
-ctx.fillStyle = '#F0F8FF'; // 淡蓝色背景
-ctx.fillRect(0, 0, width, height);
+  // 设置背景
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, width, height);
 
-// 获取日期信息
-const solar = Solar.fromDate(new Date());
-const lunar = Lunar.fromDate(new Date());
+  // 加载字体
+  const font = await PImage.registerFont('path/to/simhei.ttf', 'SimHei');
+  await font.load();
 
-// 绘制标题
-ctx.fillStyle = '#4169E1'; // 皇家蓝
-ctx.fillRect(0, 0, width, 60);
-ctx.fillStyle = '#FFFFFF';
-ctx.font = 'bold 28px Arial';
-ctx.textAlign = 'center';
-ctx.fillText(`${solar.getYear()}年 ${solar.getMonth()}月`, width / 2, 40);
+  // 获取日期信息
+  const solar = Solar.fromDate(new Date());
+  const lunar = Lunar.fromDate(new Date());
 
-// 绘制边框
-ctx.strokeStyle = '#4169E1';
-ctx.lineWidth = 3;
-ctx.strokeRect(10, 70, width - 20, height - 80);
+  // 获取特殊日期信息
+  const shuJiu = lunar.getShuJiu();
+  const shuJiuString = shuJiu ? shuJiu.toString() : '';
+  const fu = lunar.getFu();
+  const fuString = fu ? fu.toString() : '';
 
-// 获取特殊日期信息
-const shuJiu = lunar.getShuJiu();
-const shuJiuString = shuJiu ? shuJiu.toFullString() : 'N/A';
-const Fu = lunar.getFu();
-const FuString = Fu ? Fu.toFullString() : 'N/A';
+  // 绘制顶部日期
+  ctx.fillStyle = '#000000';
+  ctx.font = '18px SimHei';
+  ctx.fillText(`${solar.getYear()}-${String(solar.getMonth()).padStart(2, '0')}-${String(solar.getDay()).padStart(2, '0')} | 星期${solar.getWeekInChinese()}`, 20, 30);
 
-// 设置文本样式
-ctx.font = '18px Arial';
-ctx.fillStyle = '#333333';
-ctx.textAlign = 'left';
+  // 绘制农历信息
+  ctx.fillText(`${lunar.getYearInGanZhi()}年 ${lunar.getMonthInGanZhi()}月 ${lunar.getDayInGanZhi()}日`, 20, 60);
+  ctx.fillText(`${lunar.getMonthInChinese()}${lunar.getDayInChinese()}`, 20, 90);
 
-// 绘制文本
-const drawText = (text, x, y) => {
-  ctx.fillText(text, x, y);
-};
+  // 绘制大日期数字
+  ctx.font = 'bold 120px SimHei';
+  const dayText = String(solar.getDay()).padStart(2, '0');
+  const dayTextWidth = ctx.measureText(dayText).width;
+  ctx.fillText(dayText, (width - dayTextWidth) / 2, height / 2);
 
-const leftMargin = 20;
-drawText(`公历: ${solar.getYear()}年${solar.getMonth()}月${solar.getDay()}日 星期${solar.getWeekInChinese()}`, leftMargin, 110);
-drawText(`农历: ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`, leftMargin, 150);
-drawText(`干支: ${lunar.getYearInGanZhiByLiChun()}年 ${lunar.getMonthInGanZhiExact()}月 ${lunar.getDayInGanZhiExact()}日`, leftMargin, 190);
-drawText(`月相: ${lunar.getYueXiang()}`, leftMargin, 230);
-drawText(`物候: ${lunar.getWuHou()}`, leftMargin, 270);
-drawText(`候: ${lunar.getHou()}`, leftMargin, 310);
-drawText(`数九: ${shuJiuString}`, leftMargin, 350);
-drawText(`伏: ${FuString}`, leftMargin, 390);
+  // 绘制底部文字
+  ctx.font = '18px SimHei';
+  const bottomText = `${solar.getJieQi()} ${lunar.getHou()}`;
+  const bottomTextWidth = ctx.measureText(bottomText).width;
+  ctx.fillText(bottomText, (width - bottomTextWidth) / 2, height - 30);
 
-// 绘制装饰线
-ctx.strokeStyle = '#4169E1';
-ctx.lineWidth = 1;
-ctx.beginPath();
-ctx.moveTo(20, 420);
-ctx.lineTo(width - 20, 420);
-ctx.stroke();
-
-// 绘制底部说明
-ctx.font = '14px Arial';
-ctx.fillStyle = '#666666';
-ctx.textAlign = 'center';
-ctx.fillText('中国传统历法 • 节气 • 物候', width / 2, 450);
+  // 绘制数九或伏
+  if (shuJiuString || fuString) {
+    ctx.font = '18px SimHei';
+    const specialText = shuJiuString || fuString;
+    const specialTextWidth = ctx.measureText(specialText).width;
+    ctx.fillText(specialText, width - specialTextWidth - 20, 30);
+  }
   // Convert image to PNG format and return
   PImage.encodePNGToStream(canvas, res)
     .then(() => {
