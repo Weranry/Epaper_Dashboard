@@ -21,10 +21,6 @@ app.get('/getlunarimg', (req, res) => {
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, width, height);
 
-  // 加载字体
-  const font = await PImage.registerFont('path/to/simhei.ttf', 'SimHei');
-  await font.load();
-
   // 获取日期信息
   const solar = Solar.fromDate(new Date());
   const lunar = Lunar.fromDate(new Date());
