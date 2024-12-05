@@ -1,7 +1,7 @@
 const express = require('express');
 const PImage = require('pureimage');
 const { Solar, Lunar } = require('lunar-javascript');
-const path = require('path'); // Import the path module
+const path = require('path');
 const app = express();
 const port = 3000;
 
@@ -61,17 +61,22 @@ app.get('/getlunarimg', (req, res) => {
     const specialTextWidth = ctx.measureText(specialText).width;
     ctx.fillText(specialText, width - specialTextWidth - 20, 30);
   }
-  // Convert image to PNG format and return
-  PImage.encodePNGToStream(canvas, res)
+
+  // Set the content type to JPG
+  res.setHeader('Content-Type', 'image/jpg');
+
+  // Convert image to JPG format and return
+  PImage.encodeJPEGToStream(canvas, res, 85)
     .then(() => {
-      console.log("Image sent to client");
+      console.log("JPG image sent to client");
     })
     .catch((e) => {
-      console.error("Error sending image: ", e.stack);
-      res.status(500).send('Error generating image');
+      console.error("Error sending JPG image: ", e.stack);
+      res.status(500).send('Error generating JPG image');
     });
 });
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
+
