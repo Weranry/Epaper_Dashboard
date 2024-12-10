@@ -15,6 +15,7 @@ const CourseOutput = require('./course/course.js');
 async function generateScheduleImage(courseOutput, res) {
     const img = PImage.make(400, 300);
     const ctx = img.getContext('2d');
+   
 
     // 设置白色背景
     ctx.fillStyle = '#FFFFFF';
@@ -57,7 +58,7 @@ async function generateScheduleImage(courseOutput, res) {
     }
 
     res.setHeader('Content-Type', 'image/jpeg');
-    return PImage.encodeJPEGToStream(img, res, 85)
+    return PImage.encodeJPEGToStream(img, res, 100)
   .then(() => {
             console.log("JPEG image sent to client");
         })
