@@ -62,34 +62,54 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
   const height = 128;
   const canvas = PImage.make(width, height);
   const ctx = canvas.getContext('2d');
-  
+
 
   // 设置背景
   ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, width, height);
 
-  // 绘制文本信息
   ctx.fillStyle = '#000000';
-  ctx.font = '12px SimHei';
-  ctx.fillText(`月出: ${moonTimes.rise ? moonTimes.rise.toLocaleTimeString() : 'N/A'}`, 10, 20);
-  ctx.fillText(`月落: ${moonTimes.set ? moonTimes.set.toLocaleTimeString() : 'N/A'}`, 10, 40);
-  ctx.fillText(`照明度: ${(moonIllumination.fraction * 100).toFixed(2)}%`, 10, 60);
-  ctx.fillText(`距离: ${Math.round(moonPosition.distance)} km`, 10, 80);
-  ctx.fillText(`最高角度: ${(moonPosition.altitude * 180 / Math.PI).toFixed(2)}°`, 10, 100);
+  ctx.font = '18px SimHei';
+  ctx.fillText(moonPhaseChinese, 10, 20);
+
+  ctx.font = '16px SimHei';
+
+  // 处理月出时间
+  let riseName = '月出: ';
+  ctx.fillText(riseName, 10, 38);
+  let riseValue = moonTimes.rise ? moonTimes.rise.toLocaleTimeString() : 'N/A';
+  let riseWidth = ctx.measureText(riseValue).width;
+  ctx.fillText(riseValue, 256 - riseWidth - 10, 38);
+
+  // 处理月落时间
+  let setName = '月落: ';
+  ctx.fillText(setName, 10, 58);
+  let setValue = moonTimes.set ? moonTimes.set.toLocaleTimeString() : 'N/A';
+  let setWidth = ctx.measureText(setValue).width;
+  ctx.fillText(setValue, 256 - setWidth - 10, 58);
+
+  // 处理照明度
+  let illumText = '照明度: ';
+  let illumValue = `${(moonIllumination.fraction * 100).toFixed(2)}%`;
+  let illumWidth = ctx.measureText(illumText).width;
+  ctx.fillText(illumText, 10, 78);
+  ctx.fillText(illumValue, 256 - ctx.measureText(illumValue).width - 10, 78);
+
+  // 处理距离
+  let distanceText = '距离: ';
+  let distanceValue = `${Math.round(moonPosition.distance)} km`;
+  let distanceWidth = ctx.measureText(distanceText).width;
+  ctx.fillText(distanceText, 10, 98);
+  ctx.fillText(distanceValue, 256 - ctx.measureText(distanceValue).width - 10, 98);
+
+  // 处理最高角度
+  let altitudeText = '最高角度: ';
+  let altitudeValue = `${(moonPosition.altitude * 180 / Math.PI).toFixed(2)}°`;
+  let altitudeWidth = ctx.measureText(altitudeText).width;
+  ctx.fillText(altitudeText, 10, 118);
+  ctx.fillText(altitudeValue, 256 - ctx.measureText(altitudeValue).width - 10, 118);
 
   try {
-    // 加载并绘制月相图标
-   /* const moonPhaseImg = await loadMoonPhaseImage(moonPhaseEnglish);
-    if (moonPhaseImg) {
-      ctx.drawImage(moonPhaseImg, 180, 10, 60, 60);
-    } else {
-      ctx.fillText('图标未找到', 180, 40);
-    }
-*/
-    // 绘制月相名称（中文）
-    ctx.fillText(moonPhaseChinese, 180, 90);
-
-    // 设置响应头并发送图像
     res.setHeader('Content-Type', 'image/jpeg');
 
     // 将图像转换为 JPG 格式并返回
