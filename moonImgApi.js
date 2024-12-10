@@ -58,8 +58,8 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
   const moonPhaseChinese = moonPhaseMap[moonPhaseEnglish];
 
   // 创建图像
-  const width = 250;
-  const height = 122;
+  const width = 256;
+  const height = 128;
   const canvas = PImage.make(width, height);
   const ctx = canvas.getContext('2d');
   
