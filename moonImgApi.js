@@ -116,7 +116,7 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
     ctx.fillText(altitudeValue, 256 - ctx.measureText(altitudeValue).width - 10, 118);
 
     try {
-        res.setHeader('Content - Type', 'image/jpeg');
+        res.setHeader('Content-Type', 'image/jpeg');
 
         // 将图像转换为JPG格式并返回
         await PImage.encodeJPEGToStream(canvas, res, 100);
