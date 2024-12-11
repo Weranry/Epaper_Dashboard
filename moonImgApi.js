@@ -71,7 +71,7 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
 
   ctx.fillStyle = '#000000';
   ctx.font = '18px SimHei';
-  ctx.fillText(moonPhaseChinese, 10, 20);
+  ctx.fillText(date, 10, 20);
 
   ctx.font = '16px SimHei';
 
