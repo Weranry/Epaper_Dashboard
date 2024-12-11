@@ -48,7 +48,8 @@ function loadMoonPhaseImage(phaseName) {
 
 moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
   const { lat, lon } = req.params;
-  const date = new Date();
+  const now = new Date();
+  const date = new Date(now);
 
   // 获取月亮信息
   const moonTimes = SunCalc.getMoonTimes(date, parseFloat(lat), parseFloat(lon));

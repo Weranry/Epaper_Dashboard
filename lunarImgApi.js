@@ -22,8 +22,9 @@ lunarImgApi.get('/getlunarimg', (req, res) => {
     ctx.fillRect(0, 0, width, height);
 
     // 获取日期信息
-    const solar = Solar.fromDate(new Date());
-    const lunar = Lunar.fromDate(new Date());
+    const nowthat = new Date();
+    const solar = Solar.fromDate(new Date(nowthat));
+    const lunar = Lunar.fromDate(new Date(nowthat));
 
     // 获取特殊日期信息
     const shuJiu = lunar.getShuJiu();
