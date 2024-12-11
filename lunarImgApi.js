@@ -33,30 +33,30 @@ lunarImgApi.get('/getlunarimg', (req, res) => {
 
     // 绘制顶部日期
     ctx.fillStyle = '#000000';
-    ctx.font = '18px SimHei';
+    ctx.font = '20px SimHei';
     ctx.fillText(`${solar.getYear()}-${String(solar.getMonth()).padStart(2, '0')}-${String(solar.getDay()).padStart(2, '0')} | 星期${solar.getWeekInChinese()}`, 20, 30);
 
     // 绘制农历信息
     ctx.fillStyle = '#000000';
-    ctx.font = '14px SimHei';
+    ctx.font = '16px SimHei';
     ctx.fillText(`${lunar.getYearInGanZhi()}年 ${lunar.getMonthInGanZhi()}月 ${lunar.getDayInGanZhi()}日`, 20, 60);
     ctx.fillText(`${lunar.getMonthInChinese()}月${lunar.getDayInChinese()}`, 20, 90);
 
     // 绘制大日期数字
-    ctx.font = '120px SimHei';
+    ctx.font = '140px SimHei';
     const dayText = String(solar.getDay());
     const dayTextWidth = ctx.measureText(dayText).width;
     ctx.fillText(dayText, (width - dayTextWidth) / 2, (height - 120) / 2 + 120);
 
     // 绘制底部文字
-    ctx.font = '14px SimHei';
+    ctx.font = '16px SimHei';
     const bottomText = `${lunar.getWuHou()} ${lunar.getHou()}`;
     const bottomTextWidth = ctx.measureText(bottomText).width;
     ctx.fillText(bottomText, (width - bottomTextWidth) / 2, height - 30);
 
     // 绘制数九或伏
     if (shuJiuString || fuString) {
-        ctx.font = '14px SimHei';
+        ctx.font = '16px SimHei';
         const specialText = shuJiuString || fuString;
         const specialTextWidth = ctx.measureText(specialText).width;
         ctx.fillText(specialText, width - specialTextWidth - 20, 30);
