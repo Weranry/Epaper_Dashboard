@@ -10,9 +10,24 @@ const moonImgApi = express.Router();
 const fontPath = path.join(__dirname, 'public', 'simhei.ttf');
 PImage.registerFont(fontPath, 'SimHei');
 const font = PImage.registerFont(fontPath, 'SimHei');
-font.loadSync();// 同步加载字体
 
+const iconPath = path.join(__dirname, 'public', 'icons.ttf');
+PImage.registerFont(iconPath, 'icons');
+const icon = PImage.registerFont(iconPath, 'icons');
+font.loadSync();// 同步加载字体
+icon.loadSync();
 // 月相名称映射
+const mooniconMap = {
+    "new_moon": "",
+    "waxing_crescent": "",
+    "first_quarter": "",
+    "waxing_gibbous": "",
+    "full_moon": "",
+    "waning_gibbous": "",
+    "last_quarter": "",
+    "waning_crescent": ""
+};
+
 const moonPhaseMap = {
     "new_moon": "新月",
     "waxing_crescent": "娥眉月",
@@ -52,7 +67,7 @@ function adjustDate(date, offsetHours) {
 }
 
 moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
-    const {lat, lon}= req.params;
+    const { lat, lon } = req.params;
     const now = new Date();
     const date = adjustDate(new Date(now), 8);
 
@@ -62,6 +77,7 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
     const moonIllumination = SunCalc.getMoonIllumination(date);
     const moonPhaseEnglish = getMoonPhaseName(moonIllumination);
     const moonPhaseChinese = moonPhaseMap[moonPhaseEnglish];
+    const moonicon = mooniconMap[moonPhaseEnglish];
 
     // 创建图像
     const width = 256;
@@ -73,24 +89,29 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
     // 设置背景
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, width, height);
+    
+    
+    ctx.fillStyle = '#000000';
+    ctx.font = '18px icons';
+    ctx.fillText(moonicon, 10, 20);
 
     ctx.fillStyle = '#000000';
     ctx.font = '18px SimHei';
-    ctx.fillText(moonPhaseChinese, 10, 20);
+    ctx.fillText(moonPhaseChinese, 30, 20);
 
     ctx.font = '16px SimHei';
 
     // 处理月出时间
     let riseName = '月出: ';
     ctx.fillText(riseName, 10, 38);
-    let riseValue = moonTimes.rise? moonTimes.rise.toLocaleTimeString() : 'N/A';
+    let riseValue = moonTimes.rise ? moonTimes.rise.toLocaleTimeString() : 'N/A';
     let riseWidth = ctx.measureText(riseValue).width;
     ctx.fillText(riseValue, 256 - riseWidth - 10, 38);
 
     // 处理月落时间
     let setName = '月落: ';
     ctx.fillText(setName, 10, 58);
-    let setValue = moonTimes.set? moonTimes.set.toLocaleTimeString() : 'N/A';
+    let setValue = moonTimes.set ? moonTimes.set.toLocaleTimeString() : 'N/A';
     let setWidth = ctx.measureText(setValue).width;
     ctx.fillText(setValue, 256 - setWidth - 10, 58);
 
