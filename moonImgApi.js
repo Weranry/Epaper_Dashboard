@@ -62,6 +62,9 @@ function loadMoonPhaseImage(phaseName) {
 }
 
 function adjustDate(date, offsetHours) {
+    if (typeof offsetHours!== 'number') {
+        throw new Error('offsetHours should be a number');
+    }
     date.setHours(date.getHours() + offsetHours);
     return date;
 }
@@ -85,56 +88,69 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
     const canvas = PImage.make(width, height);
     const ctx = canvas.getContext('2d');
 
-
     // 设置背景
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, width, height);
-    
-    
-    ctx.fillStyle = '#000000';
-    ctx.font = '18px icons';
-    ctx.fillText(moonicon, 10, 20);
 
+    // 绘制分割线
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 1;
+
+    // 横向分割线
+    ctx.beginPath();
+    ctx.moveTo(0, height - 25);
+    ctx.lineTo(width, height - 25);
+    ctx.stroke();
+
+    // 纵向分割线
+    const centerX = width / 2;
+    ctx.beginPath();
+    ctx.moveTo(centerX, 0);
+    ctx.lineTo(centerX, height - 25);
+    ctx.stroke();
+
+    // 右侧上部分的横向分割线
+    ctx.beginPath();
+    ctx.moveTo(centerX, (height - 25) / 2);
+    ctx.lineTo(width, (height - 25) / 2);
+    ctx.stroke();
+
+    // 绘制月相图标和名称
     ctx.fillStyle = '#000000';
+    ctx.font = '64px icons';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const leftCenterX = centerX / 2;
+    ctx.fillText(moonicon, leftCenterX, (height - 25) / 2 - 12);
+
     ctx.font = '18px SimHei';
-    ctx.fillText(moonPhaseChinese, 30, 20);
+    ctx.fillText(moonPhaseChinese, leftCenterX, (height - 25) / 2 + 40);
 
+    // 绘制月出月落时间
     ctx.font = '16px SimHei';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
 
-    // 处理月出时间
-    let riseName = '月出: ';
-    ctx.fillText(riseName, 10, 38);
-    let riseValue = moonTimes.rise ? moonTimes.rise.toLocaleTimeString() : 'N/A';
-    let riseWidth = ctx.measureText(riseValue).width;
-    ctx.fillText(riseValue, 256 - riseWidth - 10, 38);
+    // 月出时间
+    ctx.fillText('↑ '+(moonTimes.rise? moonTimes.rise.toLocaleTimeString('en-US', { hour12: false }) : 'N/A'), 10, height - 10);
 
-    // 处理月落时间
-    let setName = '月落: ';
-    ctx.fillText(setName, 10, 58);
-    let setValue = moonTimes.set ? moonTimes.set.toLocaleTimeString() : 'N/A';
-    let setWidth = ctx.measureText(setValue).width;
-    ctx.fillText(setValue, 256 - setWidth - 10, 58);
+    // 月落时间
+    const setTimeText =((moonTimes.set? moonTimes.set.toLocaleTimeString('en-US', { hour12: false }) : 'N/A') + '↓ ');
+    const setTimeWidth = ctx.measureText(setTimeText).width;
+    ctx.textAlign = 'right';
+    ctx.fillText(setTimeText, width - 10, height - 10);
 
-    // 处理照明度
-    let illumText = '照明度: ';
-    let illumValue = `${(moonIllumination.fraction * 100).toFixed(2)}%`;
-    let illumWidth = ctx.measureText(illumText).width;
-    ctx.fillText(illumText, 10, 78);
-    ctx.fillText(illumValue, 256 - ctx.measureText(illumValue).width - 10, 78);
+    // 绘制照明度
+    ctx.textAlign = 'left';
+    ctx.font = '18px SimHei';
+    const topSectionCenter = (height - 25) / 4;
+    ctx.fillText('照明度', centerX + 10, topSectionCenter - 12);
+    ctx.fillText(`${(moonIllumination.fraction * 100).toFixed(2)}%`, centerX + 10, topSectionCenter + 15);
 
-    // 处理距离
-    let distanceText = '距离: ';
-    let distanceValue = `${Math.round(moonPosition.distance)} km`;
-    let distanceWidth = ctx.measureText(distanceText).width;
-    ctx.fillText(distanceText, 10, 98);
-    ctx.fillText(distanceValue, 256 - ctx.measureText(distanceValue).width - 10, 98);
-
-    // 处理最高角度
-    let altitudeText = '最高角度: ';
-    let altitudeValue = `${(moonPosition.altitude * 180 / Math.PI).toFixed(2)}°`;
-    let altitudeWidth = ctx.measureText(altitudeText).width;
-    ctx.fillText(altitudeText, 10, 118);
-    ctx.fillText(altitudeValue, 256 - ctx.measureText(altitudeValue).width - 10, 118);
+    // 绘制距离
+    const bottomSectionCenter = ((height - 25) * 3 / 4);
+    ctx.fillText('距离', centerX + 10, bottomSectionCenter - 12);
+    ctx.fillText(`${Math.round(moonPosition.distance)} km`, centerX + 10, bottomSectionCenter + 15);
 
     try {
         res.setHeader('Content-Type', 'image/jpeg');
