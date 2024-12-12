@@ -87,6 +87,7 @@ moonImgApi.get('/getmoon/:lat/:lon', async (req, res) => {
     const height = 128;
     const canvas = PImage.make(width, height);
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
 
     // 设置背景
     ctx.fillStyle = '#FFFFFF';

@@ -15,6 +15,7 @@ const CourseOutput = require('./course/course.js');
 async function generateScheduleImage(courseOutput, res) {
     const img = PImage.make(400, 300);
     const ctx = img.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
    
 
     // 设置白色背景
