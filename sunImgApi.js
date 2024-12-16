@@ -34,16 +34,17 @@ function adjustDate(date, offsetHours) {
     if (typeof offsetHours !== 'number') {
         throw new Error('offsetHours should be a number');
     }
-    date.setHours(date.getHours() + offsetHours);
-    return date;
+    return new Date(date.getTime() + offsetHours * 60 * 60 * 1000);
 }
+
+const formatTime = (date) => date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai' });
 
 sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
     const { lat, lon } = req.params;
     const now = new Date();
-    const date = adjustDate(new Date(now), 8);
-    const sunTimes = SunCalc.getTimes(date, parseFloat(lat), parseFloat(lon));
-    const sunPosition = SunCalc.getPosition(date, parseFloat(lat), parseFloat(lon));
+    const adjustedDate = adjustDate(now, 8);
+    const sunTimes = SunCalc.getTimes(adjustedDate, parseFloat(lat), parseFloat(lon));
+    const sunPosition = SunCalc.getPosition(adjustedDate, parseFloat(lat), parseFloat(lon));
 
     const daylightDurationMs = sunTimes.sunset - sunTimes.sunrise;
     const totalMinutes = Math.floor(daylightDurationMs / (1000 * 60));
@@ -51,9 +52,9 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
     const minutes = totalMinutes % 60;
 
     const sunAltitude = Math.round(sunPosition.altitude * 180 / Math.PI * 10) / 10;
-    const sunrise = sunTimes.sunrise.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    const sunset = sunTimes.sunset.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    const noon = sunTimes.solarNoon.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    const sunrise = formatTime(sunTimes.sunrise);
+    const sunset = formatTime(sunTimes.sunset);
+    const noon = formatTime(sunTimes.solarNoon);
     const daylightDuration = `${hours}:${minutes.toString().padStart(2, '0')}`;
 
     const width = 256;
@@ -84,17 +85,17 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 
     // 在弧线最高处准确画太阳图标
     ctx.fillStyle = 'black';
-    ctx.font = '18px icons';
+    ctx.font = '16px icons';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText('', highestX, highestY);
 
     // 在太阳图标上方显示日中时间和最高高度角
     ctx.fillStyle = 'black';
-    ctx.font = '18px SimHei';
+    ctx.font = '16px SimHei';
     const textToDisplay = `正午${noon} - 高度角: ${sunAltitude}`;
     const textWidth = ctx.measureText(textToDisplay).width;
-    ctx.fillText(textToDisplay, highestX, highestY - 18);
+    ctx.fillText(textToDisplay, highestX, highestY - 15);
 
     // 在纵向100处画横线并在其下方绘制两条竖线三等分区域
     ctx.beginPath();
@@ -129,12 +130,11 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
     const arrowUp = '↑';
     const arrowDown = '↓';
 
-    // Sunrise with up arrow
     ctx.fillText(`${arrowUp} ${sunrise}`, thirdWidth / 2, yPosition);
 
     // Daylight duration (unchanged)
     ctx.fillText(daylightDuration, thirdWidth * 1.5, yPosition);
-
+    
     // Sunset with down arrow
     ctx.fillText(`${sunset} ${arrowDown}`, thirdWidth * 2.5, yPosition);
     try {
