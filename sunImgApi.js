@@ -7,12 +7,14 @@ const path = require('path');
 const sunImgApi = express.Router();
 
 const fontPath = path.join(__dirname, 'public', 'simhei.ttf');
+PImage.registerFont(fontPath, 'SimHei');
+const font = PImage.registerFont(fontPath, 'SimHei');
+
 const iconPath = path.join(__dirname, 'public', 'icons.ttf');
-
-// 分别注册并加载两种字体
-PImage.registerFont(fontPath, 'SimHei').loadSync();
-PImage.registerFont(iconPath, 'Icons').loadSync();
-
+PImage.registerFont(iconPath, 'icons');
+const icon = PImage.registerFont(iconPath, 'icons');
+font.loadSync();// 同步加载字体
+icon.loadSync();
 function calculateYPosition(angle) {
     let minY = 100;
     let maxY = 20;
