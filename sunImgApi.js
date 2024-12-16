@@ -4,6 +4,11 @@ const SunCalc = require('suncalc');
 const fs = require('fs');
 const path = require('path');
 
+function adjustDate(date, offsetHours) {
+    date.setHours(date.getHours() + offsetHours);
+    return date;
+}
+
 const sunImgApi = express.Router();
 
 const fontPath = path.join(__dirname, 'public', 'simhei.ttf');
@@ -33,7 +38,8 @@ function calculateYPosition(angle) {
 sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
     const { lat, lon } = req.params;
     const now = new Date();
-    const sunTimes = SunCalc.getTimes(now, lat, lon);
+    const date = adjustDate(new Date(now), 8);
+    const sunTimes = SunCalc.getTimes(date, lat, lon);
     const daylightDurationMs = sunTimes.sunset - sunTimes.sunrise;
 
     const totalMinutes = Math.floor(daylightDurationMs / (1000 * 60));
@@ -71,8 +77,8 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 
     // 计算弧线上的最高点
     const t = 0.5; // 对于对称曲线，最高点在 t=0.5
-    const highestX = (1-t)*(1-t)*startPoint.x + 2*(1-t)*t*controlPoint.x + t*t*endPoint.x;
-    const highestY = (1-t)*(1-t)*startPoint.y + 2*(1-t)*t*controlPoint.y + t*t*endPoint.y;
+    const highestX = (1 - t) * (1 - t) * startPoint.x + 2 * (1 - t) * t * controlPoint.x + t * t * endPoint.x;
+    const highestY = (1 - t) * (1 - t) * startPoint.y + 2 * (1 - t) * t * controlPoint.y + t * t * endPoint.y;
 
     // 在弧线最高处准确画太阳图标
     ctx.fillStyle = 'black';
@@ -143,4 +149,3 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 });
 
 module.exports = sunImgApi;
-
