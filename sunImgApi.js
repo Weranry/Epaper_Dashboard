@@ -4,13 +4,9 @@ const SunCalc = require('suncalc');
 const fs = require('fs');
 const path = require('path');
 
-function adjustDate(date, offsetHours) {
-    date.setHours(date.getHours() + offsetHours);
-    return date;
-}
-
 const sunImgApi = express.Router();
 
+// 使用绝对路径加载字体
 const fontPath = path.join(__dirname, 'public', 'simhei.ttf');
 PImage.registerFont(fontPath, 'SimHei');
 const font = PImage.registerFont(fontPath, 'SimHei');
@@ -18,9 +14,8 @@ const font = PImage.registerFont(fontPath, 'SimHei');
 const iconPath = path.join(__dirname, 'public', 'icons.ttf');
 PImage.registerFont(iconPath, 'icons');
 const icon = PImage.registerFont(iconPath, 'icons');
-font.loadSync();// 同步加载字体
+font.loadSync(); // 同步加载字体
 icon.loadSync();
-
 
 function calculateYPosition(angle) {
     let minY = 100;
@@ -35,23 +30,30 @@ function calculateYPosition(angle) {
     }
 }
 
+function adjustDate(date, offsetHours) {
+    if (typeof offsetHours !== 'number') {
+        throw new Error('offsetHours should be a number');
+    }
+    date.setHours(date.getHours() + offsetHours);
+    return date;
+}
+
 sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
     const { lat, lon } = req.params;
     const now = new Date();
     const date = adjustDate(new Date(now), 8);
-    const sunTimes = SunCalc.getTimes(date, lat, lon);
-    const daylightDurationMs = sunTimes.sunset - sunTimes.sunrise;
+    const sunTimes = SunCalc.getTimes(date, parseFloat(lat), parseFloat(lon));
+    const sunPosition = SunCalc.getPosition(date, parseFloat(lat), parseFloat(lon));
 
+    const daylightDurationMs = sunTimes.sunset - sunTimes.sunrise;
     const totalMinutes = Math.floor(daylightDurationMs / (1000 * 60));
     const hours = Math.floor(totalMinutes / 60);
     const minutes = totalMinutes % 60;
 
-    const solarNoon = sunTimes.solarNoon;
-    const sunPosition = SunCalc.getPosition(solarNoon, lat, lon);
     const sunAltitude = Math.round(sunPosition.altitude * 180 / Math.PI * 10) / 10;
-    const sunrise = new Date(sunTimes.sunrise).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    const sunset = new Date(sunTimes.sunset).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    const noon = new Date(solarNoon).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    const sunrise = sunTimes.sunrise.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    const sunset = sunTimes.sunset.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    const noon = sunTimes.solarNoon.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
     const daylightDuration = `${hours}:${minutes.toString().padStart(2, '0')}`;
 
     const width = 256;
@@ -77,8 +79,8 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 
     // 计算弧线上的最高点
     const t = 0.5; // 对于对称曲线，最高点在 t=0.5
-    const highestX = (1 - t) * (1 - t) * startPoint.x + 2 * (1 - t) * t * controlPoint.x + t * t * endPoint.x;
-    const highestY = (1 - t) * (1 - t) * startPoint.y + 2 * (1 - t) * t * controlPoint.y + t * t * endPoint.y;
+    const highestX = (1-t)*(1-t)*startPoint.x + 2*(1-t)*t*controlPoint.x + t*t*endPoint.x;
+    const highestY = (1-t)*(1-t)*startPoint.y + 2*(1-t)*t*controlPoint.y + t*t*endPoint.y;
 
     // 在弧线最高处准确画太阳图标
     ctx.fillStyle = 'black';
@@ -89,7 +91,7 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 
     // 在太阳图标上方显示日中时间和最高高度角
     ctx.fillStyle = 'black';
-    ctx.font = '16px SimHei';
+    ctx.font = '18px SimHei';
     const textToDisplay = `正午${noon} - 高度角: ${sunAltitude}`;
     const textWidth = ctx.measureText(textToDisplay).width;
     ctx.fillText(textToDisplay, highestX, highestY - 18);
@@ -135,7 +137,6 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 
     // Sunset with down arrow
     ctx.fillText(`${sunset} ${arrowDown}`, thirdWidth * 2.5, yPosition);
-
     try {
         res.setHeader('Content-Type', 'image/jpeg');
 
@@ -149,3 +150,4 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 });
 
 module.exports = sunImgApi;
+
