@@ -15,6 +15,8 @@ PImage.registerFont(iconPath, 'icons');
 const icon = PImage.registerFont(iconPath, 'icons');
 font.loadSync();// 同步加载字体
 icon.loadSync();
+
+
 function calculateYPosition(angle) {
     let minY = 100;
     let maxY = 20;
@@ -74,7 +76,7 @@ sunImgApi.get('/getsun/:lat/:lon', async (req, res) => {
 
     // 在弧线最高处准确画太阳图标
     ctx.fillStyle = 'black';
-    ctx.font = '16px Icons';
+    ctx.font = '18px icons';
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
     ctx.fillText('', highestX, highestY);
