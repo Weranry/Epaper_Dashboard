@@ -41,13 +41,13 @@ based on Lunar-Javascript
 'yourwebsite.com/getlunarimg'
 
 #### return
--date
--lunar date
--wuhou
--shujiu
--fu
--ganzhi date
--festival all over the world
+- date
+- lunar date
+- wuhou
+- shujiu
+- fu
+- ganzhi date
+- festival all over the world
 
 #### plan
--Add more parameters
+- Add more parameters
