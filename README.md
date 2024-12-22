@@ -14,7 +14,7 @@ It's interesting that I hope to deploy to Vercel, but as we all know, the node c
 ## detailed introduction
 ### get weather
 #### get
-'yourwebsite.com/weather/yourcityname-yourcityid'
+' yourwebsite.com/weather/yourcityname-yourcityid '
 - you can get cityid from  https://github.com/qwd/LocationList
 #### return jpeg
 - now weather
@@ -25,7 +25,7 @@ It's interesting that I hope to deploy to Vercel, but as we all know, the node c
 ### get calendar
 based on Lunar-Javascript
 #### get
-'yourwebsite.com/getlunarimg'
+' yourwebsite.com/getlunarimg '
 #### return
 - date
 - lunar date
