@@ -24,15 +24,15 @@ It's interesting that I hope to deploy to Vercel, but as we all know, the node c
 #### get
 
 'yourwebsite.com/weather/yourcityname-yourcityid'
--you can get cityid from  https://github.com/qwd/LocationList
+- you can get cityid from  https://github.com/qwd/LocationList
 
 #### return jpeg
--now weather
--now temp.
--now aqi(palnned）
+- now weather
+- now temp.
+- now aqi(palnned）
 
 #### Plan
--Add more parameters
+- Add more parameters
 
 ### get calendar
 based on Lunar-Javascript
