@@ -1,44 +1,50 @@
 # Epaper_Dashboard
-For OpenEpaperLink and Epaper tags to display some static or not need always refresh message. such as today weather or weather forecast,calendar,even ti do list and all of you can imagined it.
-The main working method is to generate images through Node.js and Express and have them obtained by AP.
-It's interesting that I hope to deploy to Vercel, but as we all know, the node canvas library requires external extensions, so I had to give it up and find a new pure JS alternative library pureimage.
-## major function(currently)
-- Weather
-- chinese traditional calendar
-- get moon message(debuging）
-- get sun message（debuging）
-- get your course information(deuging)
-## Planned or upcoming function
-- get air quality
-- count down
-## detailed introduction
-### get weather
-#### get
-' yourwebsite.com/weather/yourcityname-yourcityid '
-- you can get cityid from  https://github.com/qwd/LocationList
-#### return jpeg
-- now weather
-- now temp.
-- now aqi(palnned）
-#### Plan
-- Add more parameters
-### get calendar
-based on Lunar-Javascript
-#### get
-' yourwebsite.com/getlunarimg '
-#### return
-- date
-- lunar date
-- wuhou
-- shujiu
-- fu
-- ganzhi date
-- festival all over the world
-#### plan
-- Add more parameters
-### get moon
-- testing and debuging
-### get sun
-- testing and debuging
-### get course arrangement
-- testing and debuging
+
+The Epaper_Dashboard is designed for OpenEpaperLink and Epaper tags to display static or less frequently updated messages such as today's weather, weather forecasts, calendars, and even to - do lists - basically anything you can imagine.
+
+## Working Method
+The main working mechanism involves generating images via Node.js and Express, and then having these images retrieved by API. Interestingly, I initially hoped to deploy it to Vercel. However, as we know, the node canvas library requires external extensions. Consequently, I had to abandon this approach and find a new pure - JS alternative library, pureimage.
+
+## Major Functions (Currently)
+1. **Weather**
+   - You can obtain weather information.
+   - ## How to get:
+     - The URL format is 'yourwebsite.com/weather/yourcityname - yourcityid'. You can get the cityid from [https://github.com/qwd/LocationList](https://github.com/qwd/LocationList).
+   - ## What it returns (planned as JPEG):
+     - Current weather.
+     - Current temperature.
+     - Current AQI (planned).
+   - ## Future Plan:
+     - Add more parameters.
+
+2. **Chinese Traditional Calendar**
+   - ## How to get:
+     - The URL is 'yourwebsite.com/getlunarimg'.
+   - ## What it returns:
+     - Date.
+     - Lunar date.
+     - Wuhou.
+     - Shujiu.
+     - Fu.
+     - Ganzhi date.
+     - Festivals all over the world.
+   - ## Future Plan:
+     - Add more parameters.
+
+3. **Get Moon Message (Under Debugging)**
+
+4. **Get Sun Message (Under Debugging)**
+
+5. **Get Your Course Information (Under Debugging)**
+
+## Planned or Upcoming Functions
+1. **Get Air Quality**
+2. **Count Down**
+
+
+Here is a simple example of how the Node.js and Express part might look like for the weather functionality (this is a very basic example and may need further modification according to your actual situation):
+
+```javascript
+const express = require('express');
+const app = express();
+const port =
