@@ -41,10 +41,3 @@ The main working mechanism involves generating images via Node.js and Express, a
 1. **Get Air Quality**
 2. **Count Down**
 
-
-Here is a simple example of how the Node.js and Express part might look like for the weather functionality (this is a very basic example and may need further modification according to your actual situation):
-
-```javascript
-const express = require('express');
-const app = express();
-const port =
