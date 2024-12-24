@@ -13,7 +13,7 @@ PImage.registerFont(iconPath, 'icon');
 const icon = PImage.registerFont(iconPath, 'icon');
 font.loadSync();
 icon.loadSync();
-
+//测试
 // 根据天气状况选择图标
 function getWeatherIcon(condition) {
     const iconMap = {

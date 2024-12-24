@@ -2,7 +2,7 @@ const express = require('express');
 const PImage = require('pureimage');
 const { fetchAndExtractaqi } = require('./getWeb/Weather/aqiData');
 const path = require('path');
-
+//测试
 const aqiImgApi = express.Router();
 
 const fontPath = path.join(__dirname, 'public', 'simhei.ttf');
